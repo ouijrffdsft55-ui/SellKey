@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Key Generator - Ducanh</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background: linear-gradient(145deg, #0b1a2e, #0a111f);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+            padding: 20px;
+            margin: 0;
+        }
+        .card {
+            background: rgba(18, 30, 46, 0.85);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 48px;
+            padding: 40px 36px;
+            max-width: 720px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 215, 100, 0.15);
+            border: 1px solid rgba(255, 215, 100, 0.1);
+        }
+        h1 {
+            color: #f6e9d0;
+            font-weight: 600;
+            font-size: 2rem;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 2px dashed rgba(255, 215, 100, 0.2);
+            padding-bottom: 20px;
+            margin-bottom: 28px;
+        }
+        h1 span {
+            background: #f6b83d;
+            color: #0b1a2e;
+            font-size: 1.1rem;
+            padding: 0 16px;
+            border-radius: 60px;
+            line-height: 2rem;
+            font-weight: 600;
+        }
+        .form-group {
+            margin-bottom: 22px;
+        }
+        .label {
+            display: block;
+            color: #b9cee6;
+            font-weight: 500;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px 24px;
+            background: rgba(0, 0, 0, 0.25);
+            padding: 16px 20px;
+            border-radius: 80px;
+            border: 1px solid rgba(255, 215, 100, 0.1);
+        }
+        .radio-group label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #d1e2f5;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.15s;
+        }
+        .radio-group label:hover {
+            color: #f6e9d0;
+        }
+        .radio-group input[type="radio"] {
+            accent-color: #f6b83d;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            filter: drop-shadow(0 0 3px #f6b83d55);
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            align-items: center;
+        }
+        .row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+            min-width: 120px;
+        }
+        .input-number {
+            background: #0d1a2b;
+            border: 1px solid #2b415a;
+            border-radius: 60px;
+            padding: 12px 20px;
+            color: #f6e9d0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            width: 100%;
+            max-width: 140px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .input-number:focus {
+            border-color: #f6b83d;
+            box-shadow: 0 0 0 3px #f6b83d33;
+        }
+        .input-number[type="number"]::-webkit-inner-spin-button {
+            opacity: 0.6;
+        }
+        .preview-box {
+            background: #0d1a2b;
+            border-radius: 60px;
+            padding: 14px 24px;
+            margin: 16px 0 22px 0;
+            border: 1px solid #2b415a;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        #keyDisplay {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            font-size: 1.4rem;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: #fad87a;
+            word-break: break-all;
+            text-shadow: 0 0 8px #f6b83d44;
+        }
+        .key-list-container {
+            background: #0d1a2b;
+            border-radius: 24px;
+            padding: 16px 20px;
+            margin: 16px 0 22px 0;
+            border: 1px solid #2b415a;
+            max-height: 260px;
+            overflow-y: auto;
+        }
+        .key-list-container::-webkit-scrollbar {
+            width: 6px;
+        }
+        .key-list-container::-webkit-scrollbar-track {
+            background: #0a111f;
+            border-radius: 10px;
+        }
+        .key-list-container::-webkit-scrollbar-thumb {
+            background: #f6b83d;
+            border-radius: 10px;
+        }
+        .key-item {
+            font-family: 'Fira Code', 'Courier New', monospace;
+            color: #d1e2f5;
+            padding: 8px 12px;
+            border-bottom: 1px solid #1f3144;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .key-item:last-child {
+            border-bottom: none;
+        }
+        .key-item .badge {
+            font-size: 0.7rem;
+            padding: 2px 12px;
+            border-radius: 30px;
+            font-family: 'Segoe UI', sans-serif;
+            white-space: nowrap;
+        }
+        .badge-day { background: #2a5a7a; color: #b3d9ff; }
+        .badge-week { background: #6a4a7a; color: #e6b3ff; }
+        .badge-month { background: #4a7a5a; color: #b3ffd9; }
+        .empty-keys {
+            color: #5a6f8a;
+            text-align: center;
+            padding: 20px 0;
+            font-style: italic;
+        }
+        .btn-group {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            border: none;
+            background: #263b52;
+            color: #eaf1fa;
+            font-weight: 600;
+            padding: 14px 28px;
+            border-radius: 60px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.15s ease;
+            box-shadow: 0 6px 0 #0f1a26;
+            flex: 1 1 auto;
+            min-width: 140px;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid #3f5a78;
+        }
+        .btn-primary {
+            background: #f6b83d;
+            color: #0b1a2e;
+            box-shadow: 0 6px 0 #a77d2a;
+            border-color: #f6c45a;
+            font-weight: 700;
+        }
+        .btn-primary:hover {
+            background: #fcc85a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #a77d2a;
+        }
+        .btn-primary:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #a77d2a;
+        }
+        .btn-secondary {
+            background: #1f3144;
+            border-color: #3a506b;
+        }
+        .btn-secondary:hover {
+            background: #2b4058;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #0f1a26;
+        }
+        .btn-secondary:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #0f1a26;
+        }
+        .btn-success {
+            background: #2a8e5c;
+            border-color: #3aae7a;
+            box-shadow: 0 6px 0 #1a5a3a;
+            color: #fff;
+        }
+        .btn-success:hover {
+            background: #3aae7a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #1a5a3a;
+        }
+        .btn-success:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #1a5a3a;
+        }
+        .btn-danger {
+            background: #8e2a2a;
+            border-color: #ae3a3a;
+            box-shadow: 0 6px 0 #5a1a1a;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            background: #ae3a3a;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #5a1a1a;
+        }
+        .btn-danger:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #5a1a1a;
+        }
+        .footer-note {
+            margin-top: 28px;
+            color: #788da8;
+            font-size: 0.85rem;
+            text-align: center;
+            border-top: 1px solid #1f3144;
+            padding-top: 18px;
+            letter-spacing: 0.3px;
+        }
+        .footer-note strong {
+            color: #f6b83d;
+            font-weight: 500;
+        }
+        .info-text {
+            color: #8aa3c0;
+            font-size: 0.85rem;
+            margin-top: 4px;
+            padding-left: 4px;
+        }
+        @media (max-width: 480px) {
+            .card { padding: 28px 18px; }
+            .radio-group { border-radius: 40px; padding: 14px 16px; gap: 12px; }
+            #keyDisplay { font-size: 1.1rem; }
+            .btn { min-width: 100px; padding: 12px 18px; }
+            .input-number { max-width: 100px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="card" role="main">
+        <h1>
+            🔑 Key
+            <span>ạiDucanh</span>
+        </h1>
+
+        <!-- Chọn lo key -->
+        <div class="form-group">
+            <span class="label">📅  Chọn loại key</span>
+            <div class="radio-group" id="typeSelector">
+                <label>
+                    <input type="radio" name="keyType" value="day" checked>
+                    Ngày (1 ngày)
+                </label>
+                <label>
+                    <input type="radio" name="keyType" value="week">
+                    Tuần (7 ngày)
+                </label>
+                <label>
+                    <input type="radio" name="keyType" value="month">
+                    Tháng (30 ngày)
+                </label>
+            </div>
+        </div>
+
+        <!-- Số lượng + tạo hàng loạt -->
+        <div class="row">
+            <div class="form-group">
+                <span class="label">🔢 Số lượng key</span>
+                <input type="number" id="quantityInput" class="input-number" value="1" min="1" max="100" />
+            </div>
+            <div class="form-group" style="flex: 2; min-width: 160px;">
+                <span class="label" style="opacity:0;">.</span>
+                <button class="btn btn-primary" id="generateBatchBtn" style="width:100%;">
+                    🚀 Tạo hàng loạt
+                </button>
+            </div>
+        </div>
+
+        <!-- Key đơn lẻ (hiển thị mẫu) -->
+        <div class="preview-box">
+            <span id="keyDisplay">Ducanh-XXXX-XXXX</span>
+            <button class="btn btn-secondary" id="copySingleBtn" style="min-width:auto; padding: 8px 20px; font-size:0.9rem; box-shadow: 0 4px 0 #0f1a26;">
+                📋 Copy
+            </button>
+        </div>
+
+        <!-- Danh sách key -->
+        <div class="key-list-container" id="keyListContainer">
+            <div class="empty-keys">📭 Chưa có key nào. Hãy tạo hàng loạt!</div>
+        </div>
+
+        <!-- Nút xoá danh sách -->
+        <div class="btn-group" style="margin-top: 6px;">
+            <button class="btn btn-danger" id="clearKeysBtn" style="flex:0.5; min-width:100px;">
+                🗑️ Xoá tất cả
+            </button>
+            <button class="btn btn-success" id="copyAllBtn" style="flex:1;">
+                📋 Sao chép tất cả
+            </button>
+        </div>
+
+        <div class="footer-note">
+            <strong>Ducanh</strong> · Key dạng <strong>Ducanh-XXXX-XXXX</strong> (X là số ngẫu nhiên) · Thời hạn theo loại đã chọn
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            "use strict";
+
+            // DOM elements
+            const keyDisplay = document.getElementById('keyDisplay');
+            const generateBatchBtn = document.getElementById('generateBatchBtn');
+            const copySingleBtn = document.getElementById('copySingleBtn');
+            const copyAllBtn = document.getElementById('copyAllBtn');
+            const clearKeysBtn = document.getElementById('clearKeysBtn');
+            const quantityInput = document.getElementById('quantityInput');
+            const radioButtons = document.querySelectorAll('input[name="keyType"]');
+            const keyListContainer = document.getElementById('keyListContainer');
+
+            // State: lưu danh sách key đã tạo
+            let keyList = [];
+
+            // Hàm tạo 4 chữ số ngẫu nhiên
+            function randomFourDigits() {
+                let result = '';
+                for (let i = 0; i < 4; i++) {
+                    result += Math.floor(Math.random() * 10);
+                }
+                return result;
+            }
+
+            // Hàm tạo key dạng Ducanh-XXXX-XXXX (X là số)
+            function generateKey() {
+                const part1 = randomFourDigits();
+                const part2 = randomFourDigits();
+                return `Ducanh-${part1}-${part2}`;
+            }
+
+            // Lấy loại key đang chọn
+            function getSelectedType() {
+                for (const radio of radioButtons) {
+                    if (radio.checked) return radio.value;
+                }
+                return 'day';
+            }
+
+            // Lấy tên hiển thị của loại
+            function getTypeLabel(type) {
+                const map = {
+                    'day': 'Ngày (1 ngày)',
+                    'week': 'Tuần (7 ngày)',
+                    'month': 'Tháng (30 ngày)'
+                };
+                return map[type] || 'Ngày';
+            }
+
+            // Lấy class badge
+            function getBadgeClass(type) {
+                const map = {
+                    'day': 'badge-day',
+                    'week': 'badge-week',
+                    'month': 'badge-month'
+                };
+                return map[type] || 'badge-day';
+            }
+
+            // Cập nhật key đơn (mẫu)
+            function updateSingleKey() {
+                const newKey = generateKey();
+                keyDisplay.textContent = newKey;
+                return newKey;
+            }
+
+            // Render danh sách key
+            function renderKeyList() {
+                if (keyList.length === 0) {
+                    keyListContainer.innerHTML = `<div class="empty-keys">📭 Chưa có key nào. Hãy tạo hàng loạt!</div>`;
+                    return;
+                }
+
+                let html = '';
+                keyList.forEach((item, index) => {
+                    const { key, type } = item;
+                    const typeLabel = getTypeLabel(type);
+                    const badgeCls = getBadgeClass(type);
+                    html += `
+                        <div class="key-item">
+                            <span>${index + 1}. ${key}</span>
+                            <span class="badge ${badgeCls}">${typeLabel}</span>
+                        </div>
+                    `;
+                });
+
+                keyListContainer.innerHTML = html;
+            }
+
+            // Tạo nhiều key
+            function generateBatch() {
+                const type = getSelectedType();
+                let quantity = parseInt(quantityInput.value, 10);
+
+                // Validate
+                if (isNaN(quantity) || quantity < 1) quantity = 1;
+                if (quantity > 500) quantity = 500;
+                quantityInput.value = quantity;
+
+                const newKeys = [];
+                for (let i = 0; i < quantity; i++) {
+                    newKeys.push({
+                        key: generateKey(),
+                        type: type
+                    });
+                }
+
+                // Thêm vào danh sách
+                keyList = keyList.concat(newKeys);
+                renderKeyList();
+
+                // Cập nhật key đơn (lấy key cuối cùng làm mẫu)
+                if (newKeys.length > 0) {
+                    keyDisplay.textContent = newKeys[newKeys.length - 1].key;
+                }
+
+                // Hiệu ứng
+                keyDisplay.style.transition = 'color 0.08s';
+                keyDisplay.style.color = '#fff7d0';
+                setTimeout(() => {
+                    keyDisplay.style.color = '#fad87a';
+                }, 120);
+
+                return newKeys;
+            }
+
+            // Xoá tất cả key
+            function clearAllKeys() {
+                if (keyList.length === 0) return;
+                keyList = [];
+                renderKeyList();
+                updateSingleKey();
+            }
+
+            // Sao chép một key (key đơn hiện tại)
+            async function copySingleKey() {
+                const keyText = keyDisplay.textContent;
+                if (!keyText || keyText === 'Ducanh-XXXX-XXXX') {
+                    updateSingleKey();
+                }
+                const textToCopy = keyDisplay.textContent;
+                try {
+                    await navigator.clipboard.writeText(textToCopy);
+                    copySingleBtn.textContent = '✅ Done';
+                    copySingleBtn.style.background = '#2a8e5c';
+                    copySingleBtn.style.boxShadow = '0 4px 0 #1a5a3a';
+                    setTimeout(() => {
+                        copySingleBtn.textContent = '📋 Copy';
+                        copySingleBtn.style.background = '#1f3144';
+                        copySingleBtn.style.boxShadow = '0 4px 0 #0f1a26';
+                    }, 1500);
+                } catch {
+                    alert('Không thể sao chép: ' + textToCopy);
+                }
+            }
+
+            // Sao chép tất cả key
+            async function copyAllKeys() {
+                if (keyList.length === 0) {
+                    alert('Chưa có key nào để sao chép!');
+                    return;
+                }
+                const allKeysText = keyList.map(item => item.key).join('\n');
+                try {
+                    await navigator.clipboard.writeText(allKeysText);
+                    copyAllBtn.textContent = '✅ Đã sao chép!';
+                    copyAllBtn.style.background = '#3aae7a';
+                    setTimeout(() => {
+                        copyAllBtn.textContent = '📋 Sao chép tất cả';
+                        copyAllBtn.style.background = '#2a8e5c';
+                    }, 1800);
+                } catch {
+                    alert('Không thể sao chép. Vui lòng sao chép thủ công.');
+                }
+            }
+
+            // Khởi tạo
+            function init() {
+                updateSingleKey();
+                renderKeyList();
+            }
+
+            // Sự kiện
+            generateBatchBtn.addEventListener('click', generateBatch);
+            copySingleBtn.addEventListener('click', copySingleKey);
+            copyAllBtn.addEventListener('click', copyAllKeys);
+            clearKeysBtn.addEventListener('click', clearAllKeys);
+
+            // Khi đổi radio, cập nhật key đơn
+            for (const radio of radioButtons) {
+                radio.addEventListener('change', function() {
+                    updateSingleKey();
+                });
+            }
+
+            // Enter trên input số lượng cũng kích hoạt tạo
+            quantityInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    generateBatch();
+                }
+            });
+
+            init();
+        })();
+    </script>
+</body>
+</html>
